@@ -1,8 +1,5 @@
 package models;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 public class Task {
     private String id;
     private String description;
@@ -14,5 +11,17 @@ public class Task {
         this.id = id;
         this.description = description;
         this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 }
