@@ -13,7 +13,8 @@ void main() {
                 Select the item you want to perform:
                 1 - Add task
                 2 - List of tasks
-                3 - Update Task""");
+                3 - Update task
+                4 - Delete task""");
         int item = scanner.nextInt();
         switch (item) {
             case 1:
@@ -36,6 +37,15 @@ void main() {
                 System.out.println("Enter new description");
                 String newDescription = scStr.nextLine();
                 updateTask(number, newDescription);
+                break;
+
+            case 4:
+                Scanner sc = new Scanner(System.in);
+                System.out.println("Enter task's number to delete");
+                int deleteId = sc.nextInt();
+                System.out.println("Enter new description");
+                deleteTask(deleteId);
+                break;
         }
     }
 
@@ -134,10 +144,40 @@ void updateTask(int id, String description) {
     }
 }
 
-//Task deleteTask(int index) {
-//    List<Task> tasks = getAllTasks();
-//
-//    Task removedTask = tasks.get(index - 1);
-//    tasks.remove(index - 1);
-//    return removedTask;
-//}
+void deleteTask(int id) {
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    File file = new File("tasks.json");
+
+    if (!file.exists() || file.length() == 0) {
+        System.out.println("No tasks found");
+        return;
+    }
+
+    try (Reader reader = new FileReader(file)) {
+        Type type = new TypeToken<List<Task>>() {
+        }.getType();
+        List<Task> tasks = gson.fromJson(reader, type);
+
+        boolean isFound = false;
+
+        for (Task task : tasks) {
+            if (task.getNumber() == id) {
+                tasks.remove(id - 1);
+                isFound = true;
+                break;
+            }
+        }
+
+        if (!isFound) {
+            System.out.println("Task not found");
+            return;
+        }
+
+        try (Writer writer = new FileWriter(file)) {
+            gson.toJson(tasks, writer);
+        }
+        System.out.println("Task deleted");
+    } catch (IOException e) {
+        throw new RuntimeException();
+    }
+}
