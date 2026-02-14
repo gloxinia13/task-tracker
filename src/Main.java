@@ -16,7 +16,10 @@ void main() {
                 2 - List of tasks
                 3 - Update task
                 4 - Delete task
-                5 - Change status""");
+                5 - Change status
+                6 - Show tasks that are not done
+                7 - Show tasks that are done
+                8 - Show tasks that are in progress""");
         int item = scanner.nextInt();
         switch (item) {
             case 1:
@@ -64,6 +67,37 @@ void main() {
                     case 3 -> updateStatus(updateStatusId, Status.done);
                     default -> System.out.println("Error");
                 }
+
+            case 6:
+                List<Task> notDoneTasks = getSelectedTasks(Status.todo);
+                for (int i = 0; i < notDoneTasks.toArray().length; i++) {
+                    System.out.println("********************************");
+                    System.out.println((notDoneTasks.get(i).getNumber()) + ".");
+                    System.out.println(notDoneTasks.get(i).getDescription());
+                    System.out.println(notDoneTasks.get(i).getStatus());
+                }
+                break;
+
+            case 7:
+                List<Task> doneTasks = getSelectedTasks(Status.done);
+                for (int i = 0; i < doneTasks.toArray().length; i++) {
+                    System.out.println("********************************");
+                    System.out.println((doneTasks.get(i).getNumber()) + ".");
+                    System.out.println(doneTasks.get(i).getDescription());
+                    System.out.println(doneTasks.get(i).getStatus());
+                }
+                break;
+
+            case 8:
+                List<Task> inProgressTasks = getSelectedTasks(Status.in_progress);
+                for (int i = 0; i < inProgressTasks.toArray().length; i++) {
+                    System.out.println("********************************");
+                    System.out.println((inProgressTasks.get(i).getNumber()) + ".");
+                    System.out.println(inProgressTasks.get(i).getDescription());
+                    System.out.println(inProgressTasks.get(i).getStatus());
+                }
+                break;
+
         }
     }
 
@@ -233,6 +267,33 @@ void updateStatus(int id, Status status) {
             gson.toJson(tasks, writer);
         }
         System.out.println("Status updated");
+    } catch (IOException e) {
+        throw new RuntimeException();
+    }
+}
+
+List<Task> getSelectedTasks(Status status) {
+    Gson gson = new Gson();
+    File file = new File("tasks.json");
+
+    if (!file.exists() || file.length() == 0) {
+        return new ArrayList<>();
+    }
+
+    try (Reader reader = new FileReader(file)) {
+        Type type = new TypeToken<List<Task>>() {
+        }.getType();
+
+        List<Task> allTasks = gson.fromJson(reader, type);
+        List<Task> selectedTasks = new ArrayList<>();
+        for (Task task : allTasks) {
+            if (task.getStatus().equals(status)) {
+                selectedTasks.add(task);
+            }
+        }
+
+        if (selectedTasks.isEmpty()) return new ArrayList<>();
+        return selectedTasks;
     } catch (IOException e) {
         throw new RuntimeException();
     }
