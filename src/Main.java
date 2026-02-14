@@ -6,6 +6,7 @@ import models.Task;
 
 void main() {
     Scanner scanner = new Scanner(System.in);
+    Scanner sc = new Scanner(System.in);
 
     System.out.println("Welcome to the ToDo application!");
     while (true) {
@@ -14,7 +15,8 @@ void main() {
                 1 - Add task
                 2 - List of tasks
                 3 - Update task
-                4 - Delete task""");
+                4 - Delete task
+                5 - Change status""");
         int item = scanner.nextInt();
         switch (item) {
             case 1:
@@ -26,13 +28,14 @@ void main() {
                     System.out.println("********************************");
                     System.out.println((tasks.get(i).getNumber()) + ".");
                     System.out.println(tasks.get(i).getDescription());
+                    System.out.println(tasks.get(i).getStatus());
                 }
                 break;
 
             case 3:
                 Scanner scInt = new Scanner(System.in);
                 Scanner scStr = new Scanner(System.in);
-                System.out.println("Enter task's number to update");
+                System.out.println("Enter task's number to update:");
                 int number = scInt.nextInt();
                 System.out.println("Enter new description");
                 String newDescription = scStr.nextLine();
@@ -40,12 +43,27 @@ void main() {
                 break;
 
             case 4:
-                Scanner sc = new Scanner(System.in);
-                System.out.println("Enter task's number to delete");
+                System.out.println("Enter task's number to delete:");
                 int deleteId = sc.nextInt();
                 System.out.println("Enter new description");
                 deleteTask(deleteId);
                 break;
+
+            case 5:
+                System.out.println("Enter task's number:");
+                int updateStatusId = scanner.nextInt();
+                System.out.println("""
+                        Enter new status:
+                        1 - Todo
+                        2 - In progress
+                        3 - Done""");
+                int newStatus = scanner.nextInt();
+                switch (newStatus) {
+                    case 1 -> updateStatus(updateStatusId, Status.todo);
+                    case 2 -> updateStatus(updateStatusId, Status.in_progress);
+                    case 3 -> updateStatus(updateStatusId, Status.done);
+                    default -> System.out.println("Error");
+                }
         }
     }
 
@@ -177,6 +195,44 @@ void deleteTask(int id) {
             gson.toJson(tasks, writer);
         }
         System.out.println("Task deleted");
+    } catch (IOException e) {
+        throw new RuntimeException();
+    }
+}
+
+void updateStatus(int id, Status status) {
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    File file = new File("tasks.json");
+
+    if (!file.exists() || file.length() == 0) {
+        System.out.println("No tasks found");
+        return;
+    }
+
+    try (Reader reader = new FileReader(file)) {
+        Type type = new TypeToken<List<Task>>() {
+        }.getType();
+        List<Task> tasks = gson.fromJson(reader, type);
+
+        boolean isFound = false;
+
+        for (Task task : tasks) {
+            if (task.getNumber() == id) {
+                task.setStatus(status);
+                isFound = true;
+                break;
+            }
+        }
+
+        if (!isFound) {
+            System.out.println("Task not found");
+            return;
+        }
+
+        try (Writer writer = new FileWriter(file)) {
+            gson.toJson(tasks, writer);
+        }
+        System.out.println("Status updated");
     } catch (IOException e) {
         throw new RuntimeException();
     }
