@@ -1,18 +1,30 @@
 package models;
 
+import java.time.LocalDateTime;
+
 public class Task {
     private String id;
     private int number ;
     private String description;
     private Status status;
-//    public LocalDate createdAt;
-//    public LocalDate updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public Task(String id, int number, String description, Status status) {
+
+    public Task(
+            String id,
+            int number,
+            String description,
+            Status status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
         this.id = id;
         this.number = number;
         this.description = description;
         this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public int getNumber() {
@@ -33,5 +45,17 @@ public class Task {
 
     public Status getStatus() {
         return status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

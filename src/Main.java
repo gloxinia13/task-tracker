@@ -1,5 +1,4 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import models.Status;
 import models.Task;
@@ -19,7 +18,8 @@ void main() {
                 5 - Change status
                 6 - Show tasks that are not done
                 7 - Show tasks that are done
-                8 - Show tasks that are in progress""");
+                8 - Show tasks that are in progress
+                9 - End the program""");
         int item = scanner.nextInt();
         switch (item) {
             case 1:
@@ -32,6 +32,8 @@ void main() {
                     System.out.println((tasks.get(i).getNumber()) + ".");
                     System.out.println(tasks.get(i).getDescription());
                     System.out.println(tasks.get(i).getStatus());
+                    System.out.println(tasks.get(i).getCreatedAt());
+                    System.out.println(tasks.get(i).getUpdatedAt());
                 }
                 break;
 
@@ -98,6 +100,9 @@ void main() {
                 }
                 break;
 
+            case 9:
+                return;
+
         }
     }
 
@@ -105,7 +110,7 @@ void main() {
 
 void addTask() {
     Scanner sc = new Scanner(System.in);
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Gson gson = buildGson();
     String uniqueId = UUID.randomUUID().toString();
 
     System.out.println("Enter task description:");
@@ -128,7 +133,7 @@ void addTask() {
                 max()
                 .orElse(0) + 1;
 
-        Task task = new Task(uniqueId, nextNumber, description, Status.todo);
+        Task task = new Task(uniqueId, nextNumber, description, Status.todo, LocalDateTime.now(), LocalDateTime.now());
 
         tasks.add(task);
 
@@ -142,7 +147,7 @@ void addTask() {
 }
 
 List<Task> getAllTasks() {
-    Gson gson = new Gson();
+    Gson gson = buildGson();
     File file = new File("tasks.json");
 
     if (!file.exists() || file.length() == 0) {
@@ -159,7 +164,7 @@ List<Task> getAllTasks() {
 }
 
 void updateTask(int id, String description) {
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Gson gson = buildGson();
     File file = new File("tasks.json");
 
     if (!file.exists() || file.length() == 0) {
@@ -177,6 +182,7 @@ void updateTask(int id, String description) {
         for (Task task : tasks) {
             if (task.getNumber() == id) {
                 task.setDescription(description);
+                task.setUpdatedAt(LocalDateTime.now());
                 isFound = true;
                 break;
             }
@@ -197,7 +203,7 @@ void updateTask(int id, String description) {
 }
 
 void deleteTask(int id) {
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Gson gson = buildGson();
     File file = new File("tasks.json");
 
     if (!file.exists() || file.length() == 0) {
@@ -235,7 +241,7 @@ void deleteTask(int id) {
 }
 
 void updateStatus(int id, Status status) {
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Gson gson = buildGson();
     File file = new File("tasks.json");
 
     if (!file.exists() || file.length() == 0) {
@@ -253,6 +259,7 @@ void updateStatus(int id, Status status) {
         for (Task task : tasks) {
             if (task.getNumber() == id) {
                 task.setStatus(status);
+                task.setUpdatedAt(LocalDateTime.now());
                 isFound = true;
                 break;
             }
@@ -273,7 +280,7 @@ void updateStatus(int id, Status status) {
 }
 
 List<Task> getSelectedTasks(Status status) {
-    Gson gson = new Gson();
+    Gson gson = buildGson();
     File file = new File("tasks.json");
 
     if (!file.exists() || file.length() == 0) {
@@ -297,4 +304,22 @@ List<Task> getSelectedTasks(Status status) {
     } catch (IOException e) {
         throw new RuntimeException();
     }
+}
+
+Gson buildGson() {
+    return new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
+                @Override
+                public JsonElement serialize(LocalDateTime src, Type typeOfSrc, JsonSerializationContext context) {
+                    return new JsonPrimitive(src.toString());
+                }
+            })
+            .registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
+                @Override
+                public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+                    return LocalDateTime.parse(json.getAsString());
+                }
+            })
+            .create();
 }
