@@ -20,7 +20,8 @@ void main() {
                 7 - Show tasks that are done
                 8 - Show tasks that are in progress
                 9 - End the program""");
-        int item = scanner.nextInt();
+        int item = readIntRange(scanner, 1, 9);
+
         switch (item) {
             case 1:
                 addTask();
@@ -62,7 +63,7 @@ void main() {
                         1 - Todo
                         2 - In progress
                         3 - Done""");
-                int newStatus = scanner.nextInt();
+                int newStatus = readIntRange(scanner, 1, 3);
                 switch (newStatus) {
                     case 1 -> updateStatus(updateStatusId, Status.todo);
                     case 2 -> updateStatus(updateStatusId, Status.in_progress);
@@ -322,4 +323,22 @@ Gson buildGson() {
                 }
             })
             .create();
+}
+
+int readIntRange(Scanner scanner, int min, int max) {
+    while (true) {
+        String input = scanner.nextLine();
+
+        try {
+            int value = Integer.parseInt(input);
+
+            if (value >= min && value <= max) {
+                return value;
+            }
+
+            System.out.println("Number outside the available range.");
+        } catch (NumberFormatException e) {
+            System.out.println("This is not a number!");
+        }
+    }
 }
