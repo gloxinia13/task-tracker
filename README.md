@@ -1,4 +1,7 @@
-# Task Tracker
+# Project page
+https://github.com/gloxinia13/task-tracker
+
+## Task Tracker
 The console task management app
 Lets you add, change or delete your tasks
 
@@ -15,9 +18,6 @@ OR
 
 - javac Main.java
 - java Main
-
-## Project URL
-https://github.com/gloxinia13/task-tracker
 
 
 ## Author
