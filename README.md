@@ -7,14 +7,14 @@ Lets you add, change or delete your tasks
 - Gson
 
 ## Run
-git clone https://github.com/gloxinia13/task-tracker.git
-cd task-tracker
-./gradlew run
+- git clone https://github.com/gloxinia13/task-tracker.git
+- cd task-tracker
+- ./gradlew run
 
 OR
 
-javac Main.java
-java Main
+- javac Main.java
+- java Main
 
 
 ## Author
