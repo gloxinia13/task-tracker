@@ -10,6 +10,7 @@ void main() {
     System.out.println("Welcome to the ToDo application!");
     while (true) {
         System.out.println("""
+                
                 Select the item you want to perform:
                 1 - Add task
                 2 - List of tasks
@@ -29,13 +30,14 @@ void main() {
             case 2:
                 List<Task> tasks = getAllTasks();
                 for (int i = 0; i < tasks.toArray().length; i++) {
-                    System.out.println("********************************");
+                    System.out.println("----------------------------------");
                     System.out.println((tasks.get(i).getNumber()) + ".");
                     System.out.println(tasks.get(i).getDescription());
                     System.out.println(tasks.get(i).getStatus());
                     System.out.println(tasks.get(i).getCreatedAt());
                     System.out.println(tasks.get(i).getUpdatedAt());
                 }
+                System.out.println();
                 break;
 
             case 3:
@@ -46,6 +48,7 @@ void main() {
                 System.out.println("Enter new description");
                 String newDescription = scStr.nextLine();
                 updateTask(number, newDescription);
+                System.out.println();
                 break;
 
             case 4:
@@ -53,6 +56,7 @@ void main() {
                 int deleteId = sc.nextInt();
                 System.out.println("Enter new description");
                 deleteTask(deleteId);
+                System.out.println();
                 break;
 
             case 5:
@@ -70,34 +74,39 @@ void main() {
                     case 3 -> updateStatus(updateStatusId, Status.done);
                     default -> System.out.println("Error");
                 }
+                System.out.println();
+                break;
 
             case 6:
                 List<Task> notDoneTasks = getSelectedTasks(Status.todo);
                 for (int i = 0; i < notDoneTasks.toArray().length; i++) {
-                    System.out.println("********************************");
+                    System.out.println("----------------------------------");
                     System.out.println((notDoneTasks.get(i).getNumber()) + ".");
                     System.out.println(notDoneTasks.get(i).getDescription());
                     System.out.println(notDoneTasks.get(i).getStatus());
+                    System.out.println();
                 }
                 break;
 
             case 7:
                 List<Task> doneTasks = getSelectedTasks(Status.done);
                 for (int i = 0; i < doneTasks.toArray().length; i++) {
-                    System.out.println("********************************");
+                    System.out.println("----------------------------------");
                     System.out.println((doneTasks.get(i).getNumber()) + ".");
                     System.out.println(doneTasks.get(i).getDescription());
                     System.out.println(doneTasks.get(i).getStatus());
+                    System.out.println();
                 }
                 break;
 
             case 8:
                 List<Task> inProgressTasks = getSelectedTasks(Status.in_progress);
                 for (int i = 0; i < inProgressTasks.toArray().length; i++) {
-                    System.out.println("********************************");
+                    System.out.println("----------------------------------");
                     System.out.println((inProgressTasks.get(i).getNumber()) + ".");
                     System.out.println(inProgressTasks.get(i).getDescription());
                     System.out.println(inProgressTasks.get(i).getStatus());
+                    System.out.println();
                 }
                 break;
 
@@ -340,5 +349,6 @@ int readIntRange(Scanner scanner, int min, int max) {
         } catch (NumberFormatException e) {
             System.out.println("This is not a number!");
         }
+        System.out.println();
     }
 }
