@@ -1,4 +1,3 @@
-# Project URL
 https://github.com/gloxinia13/task-tracker
 
 ## Task Tracker
